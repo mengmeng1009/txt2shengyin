@@ -3,3 +3,8 @@
 ################################################################################
 
 /.vs
+/txt2shengyin/.vs/txt2shengyin/v16
+/txt2shengyin/bin
+/txt2shengyin/obj
+/txt2shengyin/ZmConfig.cs
+/txt2shengyin/wwwroot/upload
