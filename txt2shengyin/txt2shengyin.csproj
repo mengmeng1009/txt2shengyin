@@ -19,10 +19,13 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
+    <PackageReference Include="MySql.Data" Version="8.0.18" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\upload\" />
+    <Folder Include="wwwroot\img\" />
+    <Folder Include="wwwroot\zmUI\" />
   </ItemGroup>
 
 </Project>

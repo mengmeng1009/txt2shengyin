@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using txt2shengyin.Model;
 namespace txt2shengyin.Controllers
 {
@@ -32,22 +34,19 @@ namespace txt2shengyin.Controllers
             ao.text = txt;
             return AliTTSHelper.txt2ShengYin(ao);
         }
-        // POST: api/test
-        [HttpPost]
-        public void Post([FromBody] string value)
+        #region 添加预置声音
+        [HttpPost("AddShengYinByAdmin")]
+        public int AddShengYinByAdmin(JsonElement json)
         {
+            AliTtsOption ao = new AliTtsOption();
+            ao.text =json.v;
+            string sid= AliTTSHelper.txt2ShengYin(ao);
+            ZmParameterList parameters = new ZmParameterList();
+            parameters.AddParam("uid", "admin");
+            parameters.AddParam("sid", sid);
+            parameters.AddParam("txt", ao.text);
+            return MySqlHelper.InsertTab("fanyijilu", parameters.ParamList);
         }
-
-        // PUT: api/test/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        #endregion
     }
 }

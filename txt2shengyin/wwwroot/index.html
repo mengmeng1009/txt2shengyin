@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>不言而喻</title>
+    <!--脚本核心-->
+    <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/js/vue.js"></script>
+    <script type="text/javascript" src="/js/zmscript.js"></script>
+    <!--UI框架-->
+    <link rel="stylesheet" href="/zmUI/FontAwesome/css/all.css" />
+    <link rel="stylesheet" href="/zmUI/css/zmui.css" />
+    <script type="text/javascript" src="/zmUI/js/zmui.js"></script>
+
+    <!--补充样式-->
+    <style type="text/css">
+        .container, .page {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="zm-page">
+            <div class="zm-main">
+                <div v-show="daohangIndex==1">
+                    <!-- 实时对话 -->
+                </div>
+                <div v-show="daohangIndex==2">
+                    <!-- 无言 -->
+                    <div class="duihua" v-for="xiaoxi in wuyanlist">
+                        <div class="xiaoxi" v-on:click="bofang(xiaoxi.Sid)"><span>{{xiaoxi.txt}}</span></div>
+                    </div>
+                </div>
+                <div v-show="daohangIndex==3">
+                    <!-- 以对 -->
+                </div>
+                <div v-show="daohangIndex==4">
+                    <!-- 自定义 -->
+                    <textarea cols="30" rows="10" v-model="msgtxt"></textarea>
+                    <button v-on:click="zhuanhuan">转换</button>
+                    <div>{{sid}}</div>
+                </div>
+            </div>
+            <div class="zm-bottom">
+                <div class="zm-daohang">
+                    <div v-bind:class="daohangIndex==1?'zm-item zm-item-active':'zm-item'" v-on:click="daohangIndex=1">
+                        <span>实时对话</span>
+                    </div>
+                    <div class="zm-fenge">&nbsp;</div>
+                    <div v-bind:class="daohangIndex==2?'zm-item zm-item-active':'zm-item'" v-on:click="daohangIndex=2">
+                        <span>无言</span>
+                    </div>
+                    <div class="zm-fenge">&nbsp;</div>
+                    <div v-bind:class="daohangIndex==3?'zm-item zm-item-active':'zm-item'" v-on:click="daohangIndex=3">
+                        <span>以对</span>
+                    </div>
+                    <div class="zm-fenge">&nbsp;</div>
+                    <div v-bind:class="daohangIndex==4?'zm-item zm-item-active':'zm-item'" v-on:click="daohangIndex=4">
+                        <span>自定义</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                msgtxt: "",//要转译的文本
+                sid: "",//声音文件
+                daohangIndex: 2,//存储当前点击了哪个导航
+                wuyanlist: [
+                    {
+                        txt: '你好~',
+                        Sid: '1231231'
+                    },
+                    {
+                        txt: '谢谢！',
+                        Sid: '1231231dds'
+                    }
+                ]
+            },
+            created: function () {
+                let that = this;
+
+            },
+            methods: {
+                bofang: function (sid) {//播放声音
+                },
+                zhuanhuan: function () {
+                    this.sid=this.msgtxt
+                    let that = this;
+                    zmPost("/api/tts/AddShengYinByAdmin", {
+                        txt: this.msgtxt, uid: { name:"adminx",pid:123} }, function (r) {
+                        that.sid=r
+                    })
+                }
+            }
+        })
+    </script>
+</body>
+</html>

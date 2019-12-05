@@ -1,0 +1,80 @@
+body {
+    margin: 0px;
+}
+
+/*布局，上中下三部分布局整体内容，中间内容高度自动扩展【既如果没有其他一/二部分，会自动扩展高度】，内容超出之后，自动添加滚动条
+     最外层zm-page采用flex布局，方便内部自动排版与扩展*/
+.zm-page {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    flex-direction: column;
+    background-color: #eee;
+}
+
+.zm-top {
+    z-index: 500;
+    background-color: #F7F7F7;
+    height: 60px;
+}
+
+.zm-main {
+    height: 100%;
+    overflow: auto;
+}
+
+.zm-bottom {
+    z-index: 500;
+    background-color: #F7F7F7;
+    height: 60px;
+}
+
+/*导航栏，不分底部,顶部，要能够平均分布，可以加图标，也可以不带图标*/
+.zm-daohang {
+    display: flex;
+    height: 100%;
+    font-size: 18px;
+    align-items:center;
+}
+.zm-daohang .zm-fenge {
+        width: 1px;
+        background: #ccc;
+        height: 80%;
+}
+
+.zm-daohang .zm-item {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        height: 100%;
+        align-items: center;
+}
+    .zm-daohang .zm-item-active {
+        color: #07C160;
+    }
+
+.zm-daohang .zm-item > i {
+    font-size: 30px;
+}
+
+.top-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 14px;
+}
+
+.top-icon > i {
+        font-size: 28px;
+}
+
+/*对话框里的消息*/
+
+.duihua .xiaoxi {
+    padding: 5px 10px;
+    background-color: #fff;
+    display: inline-block;
+    margin: 5px;
+    border-radius: 6px;
+}

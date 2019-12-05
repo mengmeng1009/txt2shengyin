@@ -11,7 +11,7 @@ public static class AliTTSHelper
     /// <summary>
     /// 文字转声音
     /// </summary>
-    /// <returns></returns>
+    /// <returns>声音文件名称</returns>
     public static string txt2ShengYin(AliTtsOption ao)
     {
         ao.token = AliMain.getToken();
@@ -20,7 +20,6 @@ public static class AliTTSHelper
         string url = "https://nls-gateway.cn-shanghai.aliyuncs.com/stream/v1/tts";
         string jsondata = ao.ToJSON();
         bool jg= HttpHelper.post2Save(url, jsondata, filepath);
-        Console.WriteLine("AliTTS合成结果："+jg);
         return filename;
     }
 }
