@@ -8,16 +8,16 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <title>不言而喻</title>
     <!--脚本核心-->
-    <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="/js/vue.js?v011"></script>
-    <script type="text/javascript" src="/js/zmscript.js"></script>
+    <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="./js/vue.js?v011"></script>
+    <script type="text/javascript" src="./js/zmscript.js"></script>
     <!--UI框架-->
-    <link rel="stylesheet" href="/zmUI/FontAwesome/css/all.css" />
-    <link rel="stylesheet" href="/zmUI/css/zmui.css" />
-    <script type="text/javascript" src="/zmUI/js/zmui.js?v01"></script>
+    <link rel="stylesheet" href="./zmUI/FontAwesome/css/all.css" />
+    <link rel="stylesheet" href="./zmUI/css/zmui.css" />
+    <script type="text/javascript" src="./zmUI/js/zmui.js?v01"></script>
 
     <!--补充样式-->
-    <link rel="stylesheet" href="/css/zmstyle.css" />
+    <link rel="stylesheet" href="./css/zmstyle.css" />
     <style type="text/css">
         .container, .page {
             position: absolute;
@@ -75,7 +75,7 @@
             </div>
         </div>
         <!--音频播放控件-->
-        <audio id="shengyin" preload="auto" :src="'/upload/'+sid" autoplay="autoplay" v-on:ended="isbofang=false"></audio>
+        <audio id="shengyin" preload="auto" :src="'./upload/'+sid" autoplay="autoplay" v-on:ended="isbofang=false"></audio>
         <!-- 播放音频时候的遮罩 -->
         <div class="zm-zhezhao" v-show="isbofang">
             <div class="shengyintexiao">
@@ -112,7 +112,7 @@
             created: function () {
                 let that = this;
                 //加载语音列表
-                zmGetJson("/api/tts/GetShengYinList/" + zmAppConfig.uid, function (r) {
+                zmGetJson("./api/tts/GetShengYinList/" + zmAppConfig.uid, function (r) {
                     for (let i = 0; i < r.length; i++) {
                         if (r[i].fenlei == "wuyan") {
                             that.wuyanlist.push(r[i]);
@@ -140,7 +140,7 @@
                         that.addzdy = false;
                         return;
                     }
-                    zmPost("/api/tts/AddShengYinByZdy", { txt: that.msgtxt }, function (r) {
+                    zmPost("./api/tts/AddShengYinByZdy", { txt: that.msgtxt }, function (r) {
                         if (!r.isOk) {
                             zm.alert(r.msg);
                             return false;
