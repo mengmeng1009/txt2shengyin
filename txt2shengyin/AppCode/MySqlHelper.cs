@@ -23,16 +23,16 @@ public static class MySqlHelper
     private static List<MySqlParameter> ConvertParam(List<ZmParameter> parameters)
     {
         List<MySqlParameter> mysqlparams = new List<MySqlParameter>();
-        if (parameters!=null&& parameters.Count>0)
+        if (parameters != null && parameters.Count > 0)
         {
             foreach (ZmParameter item in parameters)
             {
-                mysqlparams.Add(new MySqlParameter("@"+item.name, item.value));
+                mysqlparams.Add(new MySqlParameter("@" + item.name, item.value));
             }
         }
         return mysqlparams;
     }
-    private static string ConvertSqlStr( string sql)
+    private static string ConvertSqlStr(string sql)
     {
         return sql.Replace("$_", "@");
     }
@@ -65,6 +65,26 @@ public static class MySqlHelper
     }
     #endregion
     #region 执行SQL语句,返回DataTable;只用来执行查询结果比较少的情况
+    public static string GetOneString(string sql)
+    {
+        string jg = "";
+        DataTable dt = ExecuteDataTable(sql);
+        if (dt != null && dt.Rows.Count > 0)
+        {
+            jg = dt.Rows[0][0].ToString();
+        }
+        return jg;
+    }
+    public static string GetOneString(string sql, List<ZmParameter> parameters)
+    {
+        string jg = "";
+        DataTable dt = ExecuteDataTable(sql, parameters);
+        if (dt != null && dt.Rows.Count > 0)
+        {
+            jg = dt.Rows[0][0].ToString();
+        }
+        return jg;
+    }
     public static DataTable ExecuteDataTable(string sql)
     {
         using (MySqlConnection conn = GetConnection())
@@ -86,7 +106,7 @@ public static class MySqlHelper
         {
             using (MySqlCommand cmd = conn.CreateCommand())
             {
-                cmd.CommandText = ConvertSqlStr(sql); 
+                cmd.CommandText = ConvertSqlStr(sql);
                 cmd.Parameters.AddRange(mysqlparams.ToArray());
                 MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
                 DataTable datatable = new DataTable();
@@ -117,7 +137,7 @@ public static class MySqlHelper
         i_sql_p += string.Join(",", cols.ToArray());
         i_sql_b += string.Join(",$_", cols.ToArray());
         string i_sql = i_sql_p + i_sql_b + ")";
-        return ExecuteNonQuery(i_sql,parameters);
+        return ExecuteNonQuery(i_sql, parameters);
     }
     #endregion
 }

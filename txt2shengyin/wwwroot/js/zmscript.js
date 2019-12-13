@@ -106,7 +106,13 @@ var peizhiweixin = function (jsApiList) {
         }
     );
 }
-
+//获取guid
+function guid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
 
 //递增数据
 var dizengshuju = function (obj, zengliang, end, jiange) {
@@ -118,19 +124,67 @@ var dizengshuju = function (obj, zengliang, end, jiange) {
         }
     }, jiange)
 }
+//get请求，获取json
+var zmGetJson = function (url, chenggong) {
+    $.ajax({
+        url: url,
+        type: "get",
+        contentType: "application/json; charset=utf-8",
+        success: function (result) {
+            if (chenggong) {
+                chenggong(result);
+            } else {
+                console.log(result);
+            }
 
+        },
+        error(xhr, status, error) {
+            if (shibai) {
+                shibai(xhr, status, error)
+            }
+            else {
+                console.log(result);
+            }
+        }
+    });
+}
 //封装post//$.post 会报415错误
 var zmPost = function (url, postdata, chenggong, shibai) {
+    postdata.uid = zmAppConfig.uid;
     $.ajax({
         url: url,
         type: "post",
         contentType: "application/json; charset=utf-8",
-        data:  JSON.stringify(postdata) ,
+        data: JSON.stringify(postdata),
         success: function (result) {
-            chenggong(result);
+            if (chenggong) {
+                chenggong(result);
+            } else {
+                console.log(result);
+            }
+
         },
         error(xhr, status, error) {
-            shibai(xhr, status, error)
+            if (shibai) {
+                shibai(xhr, status, error)
+            }
+            else {
+                console.log(result);
+            }
         }
     });
+}
+
+
+
+var getUid = function () {
+    if (localStorage.getItem("zmUid")) {
+        return localStorage.getItem("zmUid");
+    } else {
+        let uid = guid();
+        localStorage.setItem("zmUid", uid);
+    }
+}
+var zmAppConfig = {
+    uid: getUid()
 }

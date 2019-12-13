@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\upload\" />
-    <Folder Include="wwwroot\img\" />
     <Folder Include="wwwroot\zmUI\" />
   </ItemGroup>
 

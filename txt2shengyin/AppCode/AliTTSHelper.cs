@@ -12,14 +12,36 @@ public static class AliTTSHelper
     /// 文字转声音
     /// </summary>
     /// <returns>声音文件名称</returns>
-    public static string txt2ShengYin(AliTtsOption ao)
+    public static ZmJieGuo txt2ShengYin(AliTtsOption ao)
     {
+        ZmJieGuo jg = new ZmJieGuo();
+        string sid = getSid(ao.text);
+        if (!string.IsNullOrEmpty(sid))
+        {
+            return jg.Ok(sid);
+        }
         ao.token = AliMain.getToken();
-        string filename =  Guid.NewGuid().ToString() + ".mp3";
+        string filename = Guid.NewGuid().ToString() + ".mp3";
         string filepath = AppHelper.AppRootDir + "//upload//" + filename;
         string url = "https://nls-gateway.cn-shanghai.aliyuncs.com/stream/v1/tts";
         string jsondata = ao.ToJSON();
-        bool jg= HttpHelper.post2Save(url, jsondata, filepath);
-        return filename;
+        ZmJieGuo jgs = HttpHelper.post2Save(url, jsondata, filepath);
+        if (jgs.isOk)
+        {
+            return jg.Ok(filename);
+        }
+        else
+        {
+            return jgs;
+        }
+        
+    }
+    public static string getSid(string txt)
+    {
+        string sql_s = "select sid from fanyijilu where txt=$_txt ";
+        ZmParameterList zm = new ZmParameterList();
+        zm.AddParam("txt", txt);
+        string sid = MySqlHelper.GetOneString(sql_s, zm.ParamList);
+        return sid;
     }
 }

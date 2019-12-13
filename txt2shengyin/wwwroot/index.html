@@ -9,14 +9,15 @@
     <title>不言而喻</title>
     <!--脚本核心-->
     <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="/js/vue.js"></script>
+    <script type="text/javascript" src="/js/vue.js?v011"></script>
     <script type="text/javascript" src="/js/zmscript.js"></script>
     <!--UI框架-->
     <link rel="stylesheet" href="/zmUI/FontAwesome/css/all.css" />
     <link rel="stylesheet" href="/zmUI/css/zmui.css" />
-    <script type="text/javascript" src="/zmUI/js/zmui.js"></script>
+    <script type="text/javascript" src="/zmUI/js/zmui.js?v01"></script>
 
     <!--补充样式-->
+    <link rel="stylesheet" href="/css/zmstyle.css" />
     <style type="text/css">
         .container, .page {
             position: absolute;
@@ -33,21 +34,28 @@
             <div class="zm-main">
                 <div v-show="daohangIndex==1">
                     <!-- 实时对话 -->
+                    <div>
+                        最近太忙，而且阿里的语音转换好像对并发有限制，猛哥决定暂时放下这部分。
+                        <br />
+                        如果你对这个项目有兴趣，可以帮忙完善一下，
+                        <br />
+                        GitHub搜索”txt2shengyin“就可以了
+                        <br />
+                        <a href="https://github.com/mengmeng1009/txt2shengyin">https://github.com/mengmeng1009/txt2shengyin</a>
+                    </div>
                 </div>
                 <div v-show="daohangIndex==2">
                     <!-- 无言 -->
                     <div class="duihua" v-for="xiaoxi in wuyanlist">
-                        <div class="xiaoxi" v-on:click="bofang(xiaoxi.Sid)"><span>{{xiaoxi.txt}}</span></div>
+                        <div class="xiaoxi" v-on:click="bofang(xiaoxi.sid)"><span>{{xiaoxi.txt}}</span></div>
                     </div>
-                </div>
-                <div v-show="daohangIndex==3">
-                    <!-- 以对 -->
                 </div>
                 <div v-show="daohangIndex==4">
                     <!-- 自定义 -->
-                    <textarea cols="30" rows="10" v-model="msgtxt"></textarea>
-                    <button v-on:click="zhuanhuan">转换</button>
-                    <div>{{sid}}</div>
+                    <div class="duihua" v-for="xiaoxi in zdylist">
+                        <div class="xiaoxi" v-on:click="bofang(xiaoxi.sid)"><span>{{xiaoxi.txt}}</span></div>
+                    </div>
+                    <div class="zm-btn-hang" v-on:click="addzdy=true">添加</div>
                 </div>
             </div>
             <div class="zm-bottom">
@@ -60,15 +68,31 @@
                         <span>无言</span>
                     </div>
                     <div class="zm-fenge">&nbsp;</div>
-                    <div v-bind:class="daohangIndex==3?'zm-item zm-item-active':'zm-item'" v-on:click="daohangIndex=3">
-                        <span>以对</span>
-                    </div>
-                    <div class="zm-fenge">&nbsp;</div>
                     <div v-bind:class="daohangIndex==4?'zm-item zm-item-active':'zm-item'" v-on:click="daohangIndex=4">
                         <span>自定义</span>
                     </div>
                 </div>
             </div>
+        </div>
+        <!--音频播放控件-->
+        <audio id="shengyin" preload="auto" :src="'/upload/'+sid" autoplay="autoplay" v-on:ended="isbofang=false"></audio>
+        <!-- 播放音频时候的遮罩 -->
+        <div class="zm-zhezhao" v-show="isbofang">
+            <div class="shengyintexiao">
+                <div class="texiaoitem" style="height:30%;animation-delay:-0.3s;"></div>
+                <div class="texiaoitem" style="height:80%;animation-delay:-0.8s;"></div>
+                <div class="texiaoitem" style="height:50%;animation-delay:-0.5s;"></div>
+                <div class="texiaoitem" style="height:70%;animation-delay:-0.7s;"></div>
+                <div class="texiaoitem" style="height:20%;animation-delay:-0.2s;"></div>
+            </div>
+        </div>
+        <div class="zm-zhezhao" v-show="addzdy">
+            <div class="zm-textarea">
+                <textarea cols="30" rows="3" v-model="msgtxt" maxlength="80"></textarea>
+                <div class="zm-textarea-jishu"><span>{{msgtxt.length}}</span>/<span>80</span></div>
+            </div>
+
+            <button v-on:click="zhuanhuan">转换</button>
         </div>
     </div>
     <script>
@@ -77,31 +101,55 @@
             data: {
                 msgtxt: "",//要转译的文本
                 sid: "",//声音文件
+                isbofang: false,//是否正在播放声音
                 daohangIndex: 2,//存储当前点击了哪个导航
                 wuyanlist: [
-                    {
-                        txt: '你好~',
-                        Sid: '1231231'
-                    },
-                    {
-                        txt: '谢谢！',
-                        Sid: '1231231dds'
-                    }
+                ],
+                addzdy: false,//添加自定义语音
+                zdylist: [
                 ]
             },
             created: function () {
                 let that = this;
-
+                //加载语音列表
+                zmGetJson("/api/tts/GetShengYinList/" + zmAppConfig.uid, function (r) {
+                    for (let i = 0; i < r.length; i++) {
+                        if (r[i].fenlei == "wuyan") {
+                            that.wuyanlist.push(r[i]);
+                        } else {
+                            that.zdylist.push(r[i]);
+                        }
+                    }
+                })
             },
             methods: {
                 bofang: function (sid) {//播放声音
+                    this.isbofang = true;
+                    if (this.sid == sid) {
+                        let buttonAudio = document.getElementById('shengyin');
+                        buttonAudio.play()
+                    } else {
+                        this.sid = sid
+                    }
+
                 },
                 zhuanhuan: function () {
-                    this.sid=this.msgtxt
                     let that = this;
-                    zmPost("/api/tts/AddShengYinByAdmin", {
-                        txt: this.msgtxt, uid: { name:"adminx",pid:123} }, function (r) {
-                        that.sid=r
+                    if (that.msgtxt.length > 80) {
+                        zm.alert("字数太多了");
+                        that.addzdy = false;
+                        return;
+                    }
+                    zmPost("/api/tts/AddShengYinByZdy", { txt: that.msgtxt }, function (r) {
+                        if (!r.isOk) {
+                            zm.alert(r.msg);
+                            return false;
+                        }
+                        that.zdylist.push({
+                            txt: that.msgtxt,
+                            sid: r.data
+                        })
+                        that.addzdy = false;
                     })
                 }
             }

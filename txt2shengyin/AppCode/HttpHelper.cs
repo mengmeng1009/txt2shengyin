@@ -15,10 +15,10 @@ public static class HttpHelper
     /// <param name="url"></param>
     /// <param name="jsonData"></param>
     /// <param name="fileName"></param>
-    /// <returns></returns>
-    public static bool post2Save(string url,string jsonData ,string filepath)
+    /// <returns>成功</returns>
+    public static ZmJieGuo post2Save(string url,string jsonData ,string filepath)
     {
-        bool isok = false;
+        ZmJieGuo jg = new ZmJieGuo();
         try
         {
             //请求
@@ -50,8 +50,9 @@ public static class HttpHelper
         }
         catch (Exception ex)
         {
-           Console.WriteLine("post2Save异常。。。“+" + ex.Message + "+”。。\r\n"); 
+           Console.WriteLine("post2Save异常。。。“+" + ex.Message + "+”。。\r\n");
+            return jg.Error(ex.Message);
         }
-        return isok;
+        return jg;
     }
 }

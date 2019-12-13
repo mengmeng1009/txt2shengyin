@@ -46,6 +46,7 @@ namespace txt2shengyin
             app.UseRouting();
             //app.UseCors("AllowSameDomain");
             app.UseStaticFiles();
+            app.UseFileServer();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
